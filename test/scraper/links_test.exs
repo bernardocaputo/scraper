@@ -16,6 +16,11 @@ defmodule Scraper.LinksTest do
       assert Links.list_links() == [link]
     end
 
+    test "list_links_by_page_id/1 returns all links by page_id" do
+      link = link_fixture()
+      assert Links.list_links_by_page_id(link.page_id) == [link]
+    end
+
     test "get_link!/1 returns the link with given id" do
       link = link_fixture()
       assert Links.get_link!(link.id) == link

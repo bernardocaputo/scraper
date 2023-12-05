@@ -22,6 +22,21 @@ defmodule Scraper.Links do
   end
 
   @doc """
+  Returns the list of links by page id.
+
+  ## Examples
+
+      iex> list_links_by_page_id(1)
+      [%Link{}, ...]
+
+  """
+  def list_links_by_page_id(page_id) do
+    Link
+    |> where([l], l.page_id == ^page_id)
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single link.
 
   Raises `Ecto.NoResultsError` if the Link does not exist.

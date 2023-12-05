@@ -10,12 +10,12 @@
 <.table
   id="pages"
   rows={@streams.pages}
-  row_click={fn {_id, page} -> JS.navigate(~p"/pages/#{page}") end}
+  row_click={fn {_id, page} -> JS.navigate(~p"/pages/#{page}/links") end}
 >
   <:col :let={{_id, page}} label="Name"><%= page.name %></:col>
   <:action :let={{_id, page}}>
     <div class="sr-only">
-      <.link navigate={~p"/pages/#{page}"}>Show</.link>
+      <.link navigate={~p"/pages/#{page}/links"}>Show</.link>
     </div>
     <.link patch={~p"/pages/#{page}/edit"}>Edit</.link>
   </:action>

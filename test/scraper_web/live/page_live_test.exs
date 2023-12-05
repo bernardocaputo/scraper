@@ -1,6 +1,7 @@
 defmodule ScraperWeb.PageLiveTest do
   use ScraperWeb.ConnCase
 
+  import Scraper.AccountsFixtures
   import Phoenix.LiveViewTest
   import Scraper.PagesFixtures
 
@@ -11,6 +12,10 @@ defmodule ScraperWeb.PageLiveTest do
   defp create_page(_) do
     page = page_fixture()
     %{page: page}
+  end
+
+  setup %{conn: conn} do
+    %{conn: log_in_user(conn, user_fixture())}
   end
 
   describe "Index" do

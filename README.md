@@ -1,18 +1,42 @@
-# Scraper
+## Score Phoenix LiveView APP
 
-To start your Phoenix server:
+This application contains a Web Scrapping where you add a link and have all links listed contained on that page.
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+## Notes
+  - For this project, I decided to use Phoenix Liveview. It is the lightest, easiest to maintain and most performant way without the need for any javascript framework/code (everything is done on the server-side).
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
-## Learn more
+## Technologies used:
+  - Elixir
+  - Phoenix LiveView
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+## System Requirements:
+  - Docker
+
+## Getting Started
+  - Clone this project to your machine
+
+```
+git clone git@github.com:bernardocaputo/scraper.git
+```
+
+  - With docker initialized, build the image in your computer by running: 
+```
+cd scraper
+docker-compose build
+docker-compose run web mix ecto.create
+docker-compose run web mix ecto.migrate
+```
+
+  - Finally run the container by typing:
+```
+docker-compose up
+```
+
+## Tests
+  - To run tests, run the following command:
+
+```
+mix test
+```

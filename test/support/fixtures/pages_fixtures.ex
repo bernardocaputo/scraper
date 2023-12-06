@@ -11,7 +11,8 @@ defmodule Scraper.PagesFixtures do
     {:ok, page} =
       attrs
       |> Enum.into(%{
-        name: "some name"
+        name: "some name",
+        url: "https://www.globo.com"
       })
       |> Scraper.Pages.create_page()
 

@@ -3,6 +3,8 @@ defmodule ScraperWeb.PageLive.Index do
 
   alias Scraper.Pages
   alias Scraper.Pages.Page
+  alias Scraper.LinkFinder
+  alias Scraper.Links
 
   @impl true
   def mount(_params, _session, socket) do
@@ -22,7 +24,7 @@ defmodule ScraperWeb.PageLive.Index do
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Page")
+    |> assign(:page_title, "New Scraper")
     |> assign(:page, %Page{})
   end
 
@@ -34,7 +36,32 @@ defmodule ScraperWeb.PageLive.Index do
 
   @impl true
   def handle_info({ScraperWeb.PageLive.FormComponent, {:saved, page}}, socket) do
-    {:noreply, stream_insert(socket, :pages, page)}
+    fetch_data(page)
+
+    {:noreply, stream_insert(socket, :pages, page, at: 0)}
+  end
+
+  def handle_info({:find_links, _page, {:error, _changeset}}, socket) do
+    {:noreply, put_flash(socket, :error, "Error creating links")}
+  end
+
+  def handle_info({:find_links, page, result}, socket) do
+    case Pages.update_page(page, %{status: processed_value(result)}) do
+      {:ok, page} ->
+        {:noreply, stream_insert(socket, :pages, page, at: 0)}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, "Error updating status")}
+    end
+  end
+
+  defp fetch_data(page) do
+    parent_pid = self()
+
+    Task.start_link(fn ->
+      result = LinkFinder.find_links(page) |> Links.validate_and_insert(page)
+      send(parent_pid, {:find_links, page, result})
+    end)
   end
 
   @impl true
@@ -44,4 +71,22 @@ defmodule ScraperWeb.PageLive.Index do
 
     {:noreply, stream_delete(socket, :pages, page)}
   end
+
+  def handle_processed_style(assigns) do
+    {color, msg} = color_and_message(assigns.page.status)
+    assigns = assigns |> assign(:color, color) |> assign(:message, msg)
+
+    ~H"""
+    <span style={"background-color: #{@color};"}>
+      <%= "#{@message}" %>
+    </span>
+    """
+  end
+
+  defp processed_value({_, nil}), do: "done"
+  defp processed_value(_), do: "error"
+
+  defp color_and_message(:done), do: {"green", "done"}
+  defp color_and_message(:none), do: {"yellow", "processing..."}
+  defp color_and_message(:error), do: {"red", "error"}
 end

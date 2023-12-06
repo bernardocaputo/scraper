@@ -71,5 +71,18 @@ defmodule Scraper.LinksTest do
       link = link_fixture()
       assert %Ecto.Changeset{} = Links.change_link(link)
     end
+
+    test "validate_and_insert/2 validate and insert_all" do
+      params = [
+        {"a", [{"href", "http://github.com/philss/floki"}], ["Github page"]},
+        {"a", [{"href", "http://github.com/philss/floki"}],
+         [{"span", [{"data-model", "user"}], ["philss"]}]},
+        {"a", [{"src", "http://github.com/philss/floki"}],
+         [{"span", [{"data-model", "user"}], ["philss"]}]}
+      ]
+
+      page = page_fixture()
+      assert {3, nil} == Links.validate_and_insert(params, page)
+    end
   end
 end

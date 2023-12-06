@@ -18,7 +18,9 @@ defmodule Scraper.Pages do
 
   """
   def list_pages do
-    Repo.all(Page)
+    Page
+    |> order_by([p], desc: p.id)
+    |> Repo.all()
   end
 
   @doc """

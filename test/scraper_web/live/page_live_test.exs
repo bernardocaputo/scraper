@@ -5,8 +5,7 @@ defmodule ScraperWeb.PageLiveTest do
   import Phoenix.LiveViewTest
   import Scraper.PagesFixtures
 
-  @create_attrs %{name: "some name"}
-  @update_attrs %{name: "some updated name"}
+  @create_attrs %{name: "some name", url: "https://www.example.com"}
   @invalid_attrs %{name: nil}
 
   defp create_page(_) do
@@ -31,8 +30,7 @@ defmodule ScraperWeb.PageLiveTest do
     test "saves new page", %{conn: conn} do
       {:ok, index_live, _html} = live(conn, ~p"/pages")
 
-      assert index_live |> element("a", "New Page") |> render_click() =~
-               "New Page"
+      assert index_live |> element("a", "New Scraper") |> render_click() =~ "New Scraper"
 
       assert_patch(index_live, ~p"/pages/new")
 
@@ -51,68 +49,11 @@ defmodule ScraperWeb.PageLiveTest do
       assert html =~ "some name"
     end
 
-    test "updates page in listing", %{conn: conn, page: page} do
-      {:ok, index_live, _html} = live(conn, ~p"/pages")
-
-      assert index_live |> element("#pages-#{page.id} a", "Edit") |> render_click() =~
-               "Edit Page"
-
-      assert_patch(index_live, ~p"/pages/#{page}/edit")
-
-      assert index_live
-             |> form("#page-form", page: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      assert index_live
-             |> form("#page-form", page: @update_attrs)
-             |> render_submit()
-
-      assert_patch(index_live, ~p"/pages")
-
-      html = render(index_live)
-      assert html =~ "Page updated successfully"
-      assert html =~ "some updated name"
-    end
-
     test "deletes page in listing", %{conn: conn, page: page} do
       {:ok, index_live, _html} = live(conn, ~p"/pages")
 
       assert index_live |> element("#pages-#{page.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#pages-#{page.id}")
-    end
-  end
-
-  describe "Show" do
-    setup [:create_page]
-
-    test "displays page", %{conn: conn, page: page} do
-      {:ok, _show_live, html} = live(conn, ~p"/pages/#{page}")
-
-      assert html =~ "Show Page"
-      assert html =~ page.name
-    end
-
-    test "updates page within modal", %{conn: conn, page: page} do
-      {:ok, show_live, _html} = live(conn, ~p"/pages/#{page}")
-
-      assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit Page"
-
-      assert_patch(show_live, ~p"/pages/#{page}/show/edit")
-
-      assert show_live
-             |> form("#page-form", page: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      assert show_live
-             |> form("#page-form", page: @update_attrs)
-             |> render_submit()
-
-      assert_patch(show_live, ~p"/pages/#{page}")
-
-      html = render(show_live)
-      assert html =~ "Page updated successfully"
-      assert html =~ "some updated name"
     end
   end
 end

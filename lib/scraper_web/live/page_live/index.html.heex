@@ -24,10 +24,7 @@
     </div>
   </:action>
   <:action :let={{id, page}}>
-    <.link
-      phx-click={JS.push("delete", value: %{id: page.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
-    >
+    <.link phx-click={JS.push("delete", value: %{id: page.id}) |> hide("##{id}")}>
       Delete
     </.link>
   </:action>

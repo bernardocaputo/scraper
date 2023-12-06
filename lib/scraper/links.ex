@@ -22,6 +22,21 @@ defmodule Scraper.Links do
   end
 
   @doc """
+  Returns the total number of links.
+
+  ## Examples
+
+      iex> count_links()
+      100
+
+  """
+  def count_links(page_id) do
+    Link
+    |> where([l], l.page_id == ^page_id)
+    |> Repo.aggregate(:count, :id)
+  end
+
+  @doc """
   Returns the list of links by page id.
 
   ## Examples
@@ -30,11 +45,22 @@ defmodule Scraper.Links do
       [%Link{}, ...]
 
   """
-  def list_links_by_page_id(page_id) do
+  def list_links_by_page_id(page_id, options \\ %{}) do
     Link
     |> where([l], l.page_id == ^page_id)
+    |> paginate(options)
     |> Repo.all()
   end
+
+  defp paginate(query, %{page: page, per_page: per_page}) do
+    offset = max((page - 1) * per_page, 0)
+
+    query
+    |> limit(^per_page)
+    |> offset(^offset)
+  end
+
+  defp paginate(query, _options), do: query
 
   @doc """
   Prepare params, validate and insert data

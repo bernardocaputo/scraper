@@ -32,13 +32,10 @@ defmodule Scraper.LinkFinderTest do
       page = page_fixture()
 
       assert [
-               %{body: "Github page", page_id: page.id, url: "http://github.com/philss/floki"},
-               %{
-                 body: "<span data-model=\"user\">philss</span>",
-                 page_id: page.id,
-                 url: "http://github.com/philss/floki"
-               }
-             ] == LinkFinder.find_links("https://wwww.globo.com", page)
+               {"a", [{"href", "http://github.com/philss/floki"}], ["Github page"]},
+               {"a", [{"href", "http://github.com/philss/floki"}],
+                [{"span", [{"data-model", "user"}], ["philss"]}]}
+             ] == LinkFinder.find_links(page)
     end
   end
 end

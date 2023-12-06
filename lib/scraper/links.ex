@@ -37,6 +37,62 @@ defmodule Scraper.Links do
   end
 
   @doc """
+  Prepare params, validate and insert data
+  """
+  @spec validate_and_insert(params :: list(tuple()), Scraper.Pages.Page.t()) ::
+          {integer(), nil} | {:error, Ecto.Changeset.t()}
+  def validate_and_insert(params, page) do
+    params
+    |> prepare_params(page)
+    |> validate_and_insert_data()
+  end
+
+  defp prepare_params(params, page) do
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+    Enum.reduce_while(params, [], fn {"a", _attributes, body} = x, acc ->
+      params = %{
+        url: fetch_attribute(x, "href"),
+        body: prepare_body(body),
+        page_id: page.id,
+        inserted_at: now,
+        updated_at: now
+      }
+
+      changeset = change_link(%Link{}, params)
+
+      if changeset.valid? do
+        {:cont, acc ++ [params]}
+      else
+        {:halt, {:error, changeset}}
+      end
+    end)
+  end
+
+  defp fetch_attribute(x, attr) do
+    try do
+      [url] = Floki.attribute(x, attr)
+      url
+    rescue
+      _ -> "no href attribute"
+    end
+  end
+
+  defp validate_and_insert_data({:error, _changeset} = err), do: err
+
+  defp validate_and_insert_data(maps) do
+    Repo.insert_all(Link, maps)
+  end
+
+  defp prepare_body([raw]) when is_binary(raw) do
+    Enum.join(for <<c::utf8 <- raw>>, do: <<c::utf8>>)
+  end
+
+  defp prepare_body(body) do
+    Floki.raw_html(body) |> String.slice(0..50)
+  end
+
+  @doc """
   Gets a single link.
 
   Raises `Ecto.NoResultsError` if the Link does not exist.

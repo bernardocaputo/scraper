@@ -21,10 +21,16 @@ defmodule Scraper.PagesTest do
     end
 
     test "create_page/1 with valid data creates a page" do
-      valid_attrs = %{name: "some name"}
+      valid_attrs = %{name: "some name", url: "https://example.com"}
 
       assert {:ok, %Page{} = page} = Pages.create_page(valid_attrs)
       assert page.name == "some name"
+    end
+
+    test "create_page/1 with invalid url return error" do
+      valid_attrs = %{name: "some name", url: "invalid_url"}
+
+      assert {:error, %Ecto.Changeset{}} = Pages.create_page(valid_attrs)
     end
 
     test "create_page/1 with invalid data returns error changeset" do

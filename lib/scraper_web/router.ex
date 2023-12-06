@@ -71,10 +71,6 @@ defmodule ScraperWeb.Router do
 
       live "/pages", PageLive.Index, :index
       live "/pages/new", PageLive.Index, :new
-      live "/pages/:id/edit", PageLive.Index, :edit
-
-      live "/pages/:id", PageLive.Show, :show
-      live "/pages/:id/show/edit", PageLive.Show, :edit
 
       live "/pages/:page_id/links", LinkLive.Index, :index
     end

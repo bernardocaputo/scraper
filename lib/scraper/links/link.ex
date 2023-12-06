@@ -7,6 +7,7 @@ defmodule Scraper.Links.Link do
   schema "links" do
     field :body, :string
     field :url, :string
+
     belongs_to :page, Page
 
     timestamps()
@@ -16,7 +17,7 @@ defmodule Scraper.Links.Link do
   def changeset(link, attrs) do
     link
     |> cast(attrs, [:body, :url, :page_id])
-    |> validate_required([:body, :url, :page_id])
+    |> validate_required([:url, :page_id])
     |> foreign_key_constraint(:page_id)
   end
 end

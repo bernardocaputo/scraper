@@ -54,21 +54,6 @@ defmodule ScraperWeb.PageLive.FormComponent do
     save_page(socket, socket.assigns.action, page_params)
   end
 
-  defp save_page(socket, :edit, page_params) do
-    case Pages.update_page(socket.assigns.page, page_params) do
-      {:ok, page} ->
-        notify_parent({:saved, page})
-
-        {:noreply,
-         socket
-         |> put_flash(:info, "Page updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign_form(socket, changeset)}
-    end
-  end
-
   defp save_page(socket, :new, page_params) do
     case Pages.create_page(page_params) do
       {:ok, page} ->

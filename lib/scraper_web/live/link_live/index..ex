@@ -10,10 +10,10 @@ defmodule ScraperWeb.LinkLive.Index do
       Listing Links
     </.header>
 
-    <.table id="pages" rows={@links}>
-      <:col :let={page} label="Name"><%= page.body %></:col>
+    <.table id="links" rows={@links}>
+      <:col :let={link} label="Name"><%= link.body %></:col>
 
-      <:col :let={page} label="Url"><%= page.url %></:col>
+      <:col :let={link} label="Url"><%= link.url %></:col>
     </.table>
 
     <.back navigate={~p"/pages"}>Back to pages</.back>

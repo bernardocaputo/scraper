@@ -41,6 +41,8 @@ defmodule Scraper.Links do
   """
   @spec validate_and_insert(params :: list(tuple()), Scraper.Pages.Page.t()) ::
           {integer(), nil} | {:error, Ecto.Changeset.t()}
+  def validate_and_insert({:error, _reason} = err, _page), do: err
+
   def validate_and_insert(params, page) do
     params
     |> prepare_params(page)
@@ -78,7 +80,7 @@ defmodule Scraper.Links do
     end
   end
 
-  defp validate_and_insert_data({:error, _changeset} = err), do: err
+  defp validate_and_insert_data({:error, _reason} = err), do: err
 
   defp validate_and_insert_data(maps) do
     Repo.insert_all(Link, maps)

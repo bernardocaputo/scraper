@@ -41,10 +41,6 @@ defmodule ScraperWeb.PageLive.Index do
     {:noreply, stream_insert(socket, :pages, page, at: 0)}
   end
 
-  def handle_info({:find_links, _page, {:error, _changeset}}, socket) do
-    {:noreply, put_flash(socket, :error, "Error creating links")}
-  end
-
   def handle_info({:find_links, page, result}, socket) do
     case Pages.update_page(page, %{status: processed_value(result)}) do
       {:ok, page} ->

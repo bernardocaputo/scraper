@@ -19,9 +19,9 @@ defmodule ScraperWeb.PageLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:name]} type="text" label="Name" />
+        <.input field={@form[:name]} type="text" label="Name" placeholder="Globo" />
 
-        <.input field={@form[:url]} type="text" label="Url" />
+        <.input field={@form[:url]} type="text" label="Url" placeholder="https://www.globo.com" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Page</.button>
         </:actions>
